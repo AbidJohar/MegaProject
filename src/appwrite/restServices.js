@@ -1,5 +1,5 @@
 import { Client,Databases,ID,Query,Storage } from "appwrite";
-import config from "../config/config";
+import config from "../config/config.js";
 
 
 export class Services {
@@ -16,7 +16,7 @@ export class Services {
 
   async createPost({title,slug,content,featuredImage,status,userId}){
        try {
-        await this.database.createDocument(
+          return  await this.database.createDocument(
             config.appwriteDatabaseId,
             config.appwriteCollectionId,
             slug,
@@ -100,7 +100,7 @@ export class Services {
 
   async uploadFile(file){
       try {
-        await this.storage.createFile(
+            return   await this.storage.createFile(
             config.appwriteBucketId,
             ID.unique(),
             file
@@ -124,6 +124,10 @@ export class Services {
   }
 
   getFilePreview(fileId){
+    console.log('fileId:', fileId); // Add this line
+    if (!fileId) {
+      throw new Error('Missing required parameter: "fileId"');
+    }
   return  this.storage.getFilePreview(
         config.appwriteBucketId,
         fileId
@@ -131,6 +135,6 @@ export class Services {
   }
 }
 
-const services = new services();
+const services = new Services();
 
 export default services

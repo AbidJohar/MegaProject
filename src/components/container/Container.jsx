@@ -2,7 +2,7 @@
 import React from 'react';
 
 const Container = ({ children }) => {
-    return <div className="h-screen w-screen overflow-auto mx-auto flex flex-col items-center justify-center p-4">
+    return <div className="w-full max-w-7xl mx-auto px-4">
         {children}
     </div>;
 

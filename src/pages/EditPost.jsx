@@ -4,7 +4,7 @@ import { useNavigate,useParams } from 'react-router-dom'
 import { useState,useEffect } from 'react'
 import Container from '../components/container/Container'
 import PostForm from '../components/post-form/PostForm'
-function EditPage() {
+function  EditPost() {
     const [post, setPost] = useState();
    const {slug} = useParams();
    const navigate = useNavigate();
@@ -32,4 +32,4 @@ function EditPage() {
  ) : null
 }
 
-export default EditPage
+export default  EditPost

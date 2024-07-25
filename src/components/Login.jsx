@@ -1,45 +1,51 @@
-import React,{useState} from 'react'
-import { useForm } from 'react-hook-form'
-import {login as authLogin} from '../features/auth/authSlicer'
-import {Link,useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { login as authLogin } from '../features/auth/authSlicer';
+import { Link, useNavigate } from 'react-router-dom';
 import Input from './Input';
 import { useDispatch } from 'react-redux';
-import authServices from '../appwrite/Auth'
-
+import authServices from '../appwrite/Auth';
+import logo from '../assets/logo.jpg';
 
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {register, handleSubmit} = useForm();
+    const { register, handleSubmit, watch, formState: { isValid } } = useForm({
+        mode: 'onChange'  // This enables validation on every change
+    });
     const [error, setError] = useState("");
 
-    const login = async (data)=>{
+    const login = async (data) => {
         setError("");
+        console.log(data);
         try {
-            const session =   await authServices.login(data);
-            if(session){
+            const session = await authServices.login(data);
+            console.log(session);
+            if (session) {
                 const userData = await authServices.getCurrentUser();
-                if(userData){
+                if (userData) {
                     dispatch(authLogin(userData));
                     navigate('/');
                 }
             }
         } catch (error) {
-            setError(error);
+            console.log("Original error:", error);
+            console.log("Error message:", error.message);
+            setError(error.message);
         }
     }
-  return (
-    <div
-    className='flex items-center justify-center w-full'
-    >
-        <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
-        <div className="mb-2 flex justify-center">
-                    <span className="inline-block w-full max-w-[100px]">
-                         <img src="" alt="" />
-                    </span>
-        </div>
-        <h2 className="text-center text-2xl font-bold leading-tight">Sign in to your account</h2>
-        <p className="mt-2 text-center text-base text-black/60">
+
+    // Watch the form fields
+    const formValues = watch();
+
+    return (
+        <div className='flex items-center justify-center w-full'>
+            <div className={`mx-auto w-full max-w-lg mt-4 bg-gray-100 rounded-xl px-5 pt-1 pb-7 mb-4 border border-black/30`}>
+                <div className="flex justify-center">
+                    <img src={logo} width={100} height={100} alt="Logo" />
+                </div>
+                <h2 className="text-center text-xl font-bold leading-tight">Sign in to your account</h2>
+                <p className="mt-2 text-center text-base text-black/60">
                     Don&apos;t have any account?&nbsp;
                     <Link
                         to="/signup"
@@ -47,39 +53,45 @@ const Login = () => {
                     >
                         Sign Up
                     </Link>
-        </p>
-        {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
-        <form onSubmit={handleSubmit(login)} className='mt-8'>
-            <div className='space-y-5'>
-              <Input
-              label= "email"
-              type="email"
-              placeholder = "Enter the email"
-              {...register("email", {
-                required: true,
-                validate: {
-                    matchPatern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-                    "Email address must be a valid address",
-                }
-            })}
-               />
-              <Input
-              label= "password"
-              type="password"
-              placeholder = "Enter the password"
-              {...register("password"), {
-                required: true,
-             }}
-               />
-                <Button
-                type="submit"
-                className="px-6 py-3 rounded-full shadow-md"
-                >Sign in</Button>
+                </p>
+                {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
+                <form onSubmit={handleSubmit(login)} className='mt-8'>
+                    <div className='space-y-5'>
+                        <Input
+                            label="email"
+                            type="email"
+                            placeholder="Enter the email"
+                            {...register("email", {
+                                required: "Email is required",
+                                validate: {
+                                    matchPattern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
+                                        "Email address must be a valid address",
+                                }
+                            })}
+                        />
+                        <Input
+                            label="password"
+                            type="password"
+                            placeholder="Enter the password"
+                            {...register("password", {
+                                required: "password is required",
+                                validate:{
+                                    matchPattern: (value) =>  /^\d{8}$/.test(value) ||
+                                        "Code must be contaian 8 digits",
+                                }
+                           })}
+                        />
+
+                        <button
+                            type="submit"
+                            className={`w-full py-2 rounded-md shadow-md ${isValid ? 'bg-blue-600' : 'bg-gray-400'}`}
+                            disabled={!isValid}
+                        >Sign in</button>
+                    </div>
+                </form>
             </div>
-        </form>
         </div>
-    </div>
-  )
+    );
 }
 
-export default Login
+export default Login;

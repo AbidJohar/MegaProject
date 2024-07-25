@@ -4,7 +4,9 @@ import authService from './appwrite/Auth';
 import { login, logout } from './features/auth/authSlicer';
 import './App.css';
 import ReactLoading from 'react-loading'
-import Signup from './components/Signup';
+import Header from './components/header/Header';
+import { Outlet } from 'react-router-dom';
+import { Footer } from './components';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -24,13 +26,23 @@ function App() {
       });
   }, []);
 
-  return loading ?   <ReactLoading
-  type={"bars"}
-  color={"#00ffff"}
-  height={100}
-  width={100}
-/> : (
-    <Signup />
+  return loading ? <div className='flex items-center justify-center  w-full h-screen'>
+    <ReactLoading
+      type={"bars"}
+      color={"#00ffff"}
+      height={100}
+      width={100}
+    />
+  </div> : (
+    <div className='min-h-screen flex flex-wrap content-between bg-white'>
+      <div className='w-full block'>
+        <Header />
+        <main>
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
+    </div>
   );
 }
 

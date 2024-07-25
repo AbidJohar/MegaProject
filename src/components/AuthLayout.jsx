@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import ReactLoading from 'react-loading'
 
-export default Protected = ({children, authentication = true}) => {
+export default function Protected ({children, authentication = true}){
 
     const [loader, setLoader] =useState(true);
     const navigate = useNavigate();
@@ -13,10 +13,13 @@ export default Protected = ({children, authentication = true}) => {
     );
 
     useEffect(()=>{
+      console.log('Auth status:', authStatus);
+      console.log('Required authentication:', authentication);
          if(authentication && authStatus !== authentication){
             navigate('/login');
          }
          if(!authentication && authStatus !== authentication){
+              console.log(authStatus);
             navigate('/');
          }
          setLoader(false);
