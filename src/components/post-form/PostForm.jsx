@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import Select from '../Select'
 import appwriteService from "../../appwrite/restServices";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Input from "../Input";
 
 export default function PostForm({ post }) {
@@ -15,7 +15,7 @@ export default function PostForm({ post }) {
             status: post?.status || "active",
         },
     });
-
+   const dispatch = useDispatch();
     const navigate = useNavigate();
     const userData = useSelector((state) => state.auth.userData);
 
@@ -34,6 +34,7 @@ export default function PostForm({ post }) {
             });
 
             if (dbPost) {
+                dispatch(updatePost(dbPost));
                 navigate(`/post/${dbPost.$id}`);
             }
         } else {
@@ -46,6 +47,7 @@ export default function PostForm({ post }) {
                 const dbPost = await appwriteService.createPost({ ...data, userId: userData.$id });
                        console.log("DataBase post:",dbPost);
                 if (dbPost) {
+                    dispatch(createPost(dbPost));
                     navigate(`/post/${dbPost.$id}`);
                 }
             }
