@@ -4,10 +4,12 @@ import appwriteService from "../appwrite/restServices";
 import Container from "../components/container/Container";
 import parse from "html-react-parser";
 import { useDispatch, useSelector } from "react-redux";
-import postSlicer from "../features/post/postSlicer";
+import {clearPost} from "../features/post/postSlicer";
+import ReactLoading from 'react-loading'
 
 export default function Post() {
     const [post, setPost] = useState(null);
+    const [loading, setLoading]= useState(false);
     const { slug } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -17,22 +19,45 @@ export default function Post() {
 
     useEffect(() => {
         if (slug) {
-            appwriteService.getPost(slug).then((post) => {
+            setLoading(true);
+            appwriteService.getPost(slug)
+            .then((post) => {
                 if (post) setPost(post);
+
                 else navigate("/");
+            })
+            .finally(()=>{
+                setLoading(false);
             });
-        } else navigate("/");
+        } 
+        else navigate("/");
     }, [slug, navigate]);
 
     const deletePost = () => {
-        appwriteService.deletePost(post.$id).then((status) => {
+          setLoading(true)
+        appwriteService.deletePost(post.$id)
+        .then((status) => {
             if (status) {
                 appwriteService.deleteFile(post.featuredImage);
                  dispatch(clearPost(post.$id));
                 navigate("/");
             }
-        });
+        })
+        .finally(()=>{
+            setLoading(false);
+        })
     };
+
+    if(loading){
+        return ( <div className='flex items-center justify-center w-full h-screen'>
+            <ReactLoading
+                type={"bars"}
+                color={"#00ffff"}
+                height={100}
+                width={100}
+            />
+        </div>)
+    }
 
     return post ? (
         <div className="py-4">

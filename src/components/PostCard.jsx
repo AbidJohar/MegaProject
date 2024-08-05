@@ -28,8 +28,8 @@ const PostCard = ({post}) => {
           />
       </div>
       <div className='w-full flex items-center justify-center'>
-      <h2 className="text-sm inline-block font-bold pb-2">{title}</h2>
-      </div>
+          <h2 className="text-sm font-bold pb-2 truncate">{title}</h2>
+        </div>
     </div>
   </Link>
   //   <Link to={`/post/${$id}`} className="block">

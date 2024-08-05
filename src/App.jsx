@@ -26,14 +26,14 @@ function App() {
       });
   }, []);
 
-  return loading ? <div className='flex items-center justify-center  w-full h-screen'>
-    <ReactLoading
+  return loading ? <div className='flex items-center justify-center w-full h-screen'>
+  <ReactLoading
       type={"bars"}
       color={"#00ffff"}
       height={100}
       width={100}
-    />
-  </div> : (
+  />
+</div> : (
     <div className='min-h-screen flex flex-wrap content-between bg-white'>
       <div className='w-full block'>
         <Header />

@@ -6,4 +6,4 @@ import Signup from "./Signup";
 import Login from "./Login";
 import PostCard from './PostCard'
 
-export { Header, Footer, LogoutBtn,RTE,Signup,Login,PostCard };
+export { Header, Footer, LogoutBtn,RTE,Signup,Login,PostCard, };
